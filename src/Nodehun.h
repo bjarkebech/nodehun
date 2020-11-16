@@ -15,7 +15,7 @@ class Nodehun : public Napi::ObjectWrap<Nodehun> {
   static Napi::FunctionReference constructor;
   HunspellContext* context;
   
-  // (dictionary: Buffer) => void
+  // (dictionary: string) => void  
   Napi::Value addDictionary(const Napi::CallbackInfo& info);
   Napi::Value addDictionarySync(const Napi::CallbackInfo& info);
 
