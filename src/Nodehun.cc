@@ -62,8 +62,8 @@ Nodehun::Nodehun(const Napi::CallbackInfo& info) : Napi::ObjectWrap<Nodehun>(inf
   Napi::Env env = info.Env();
   Napi::HandleScope scope(env);
 
-  std::string affix = info[0].ToString();
-  std::string dictionary = info[1].ToString();
+  std::string affix = info[0].ToString().Utf8Value();
+  std::string dictionary = info[1].ToString().Utf8Value();
 
   context = new HunspellContext(new Hunspell(affix.c_str(), dictionary.c_str(), NULL));
 };
@@ -110,7 +110,7 @@ Napi::Value Nodehun::addDictionarySync(const Napi::CallbackInfo& info) {
     error.ThrowAsJavaScriptException();
     return error.Value();
   } else {
-    std::string dictionary = info[0].ToString();
+    std::string dictionary = info[0].ToString().Utf8Value();
 
     context->instance->add_dic(dictionary.c_str());
     
@@ -130,7 +130,7 @@ Napi::Value Nodehun::addDictionary(const Napi::CallbackInfo& info) {
     Napi::Error error = Napi::Error::New(env, INVALID_FIRST_ARGUMENT);
     deferred.Reject(error.Value());
   } else {
-    std::string dictionary = info[0].ToString();
+    std::string dictionary = info[0].ToString().Utf8Value();
 
     AddDictionaryWorker* worker = new AddDictionaryWorker(
       context,
