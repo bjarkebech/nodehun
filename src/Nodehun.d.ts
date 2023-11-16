@@ -1,4 +1,4 @@
-declare module 'nodehun' {
+declare module 'nodehun-native' {
   export class Nodehun {
     constructor(affix: string, dictionary: string);
     
