@@ -1,5 +1,12 @@
-# Nodehun
-[![npm version](https://badge.fury.io/js/nodehun.svg)](https://badge.fury.io/js/nodehun) [![Build Status](https://travis-ci.org/Wulf/nodehun.svg?branch=master)](https://travis-ci.org/Wulf/nodehun) [![Build status](https://ci.appveyor.com/api/projects/status/9ky5lws4d191qrui/branch/master?svg=true)](https://ci.appveyor.com/project/Wulf/nodehun/branch/master)
+# Nodehun-Native
+
+## 👋 Notice - November 2023
+
+This is a fork of [ONLYOFFICE's](https://github.com/ONLYOFFICE) fork of [Nodehun](https://github.com/ONLYOFFICE/nodehun]), that allows Nodehun to link against the actual hunspell source code. Without their great work, this wouldn't have worked. I take no credit for this, I am only maintaining the package so it will work with the latest version of Hunspell.
+
+The primary difference between this fork and Nodehun is that the .dic and .aff files must be loaded from a file on disk, instead of via a Buffer.
+
+Since their repo had become stale and lacked a npm package, Nodehun-Native provides feature parity with the latest Hunspell (at time of writing v1.7.2), easily installable via NPM. I've also updated the documentation and examples.
 
 ## Introduction
 
@@ -22,7 +29,7 @@ Nodehun aims to expose as much of hunspell's functionality as possible in an eas
 
 ## Installation
 
-	npm install nodehun
+	npm install nodehun-native
 
 If you run into any build errors, make sure you satisfy the requirements for [`node-gyp`](https://github.com/nodejs/node-gyp#installation).
 
@@ -31,9 +38,8 @@ If you run into any build errors, make sure you satisfy the requirements for [`n
 ```js
 import { Nodehun } from 'nodehun'
 
-const fs          = require('fs')
-const affix       = fs.readFileSync('path/to/*.aff')
-const dictionary  = fs.readFileSync('path/to/*.dic')
+const affix       = 'path/to/*.aff'
+const dictionary  = 'path/to/*.dic'
 
 const nodehun     = new Nodehun(affix, dictionary)
 
@@ -50,13 +56,10 @@ async function example() {
 const suggestions = nodehun.suggestSync('colour')
 ```
 
-Note: It's probably not a good idea to use `readFileSync` in production.
-
 
 ## Table of Contents
 
-1. <a href="#migration-notes">Important migration notes from v2 -> v3</a>
-2. <a href="#examples">Examples</a>
+1. <a href="#examples">Examples</a>
 	* <a href="#checking-for-correctness">Spell checking</a>
 	* <a href="#spell-suggestions">Spelling suggestions</a>
 	* <a href="#add-dictionary">Adding a dictionary</a>
@@ -66,42 +69,17 @@ Note: It's probably not a good idea to use `readFileSync` in production.
 	* <a href="#stem">Word stem</a>
 	* <a href="#analyse">Word analysis</a>
 	* <a href="#generate">Word generation</a>
-3. <a href="#notes">Notes</a>
+2. <a href="#notes">Notes</a>
 	* <a href="#improving-performance">Improving performance</a>
 	* <a href="#notes-warning-on-synchronous-methods">A Warning on Synchronous Methods</a>
 	* <a href="#notes-open-office-dictionaries">A Note About Open Office Dictionaries</a>
 	* <a href="#notes-creating-dictionaries">A Note About Creating Dictionaries</a>
 	* <a href="#notes-finding-dictionaries">Where To Get Dictionaries</a>
-4. <a href="#development">Development and Contribution</a>
+3. <a href="#development">Development and Contribution</a>
+	* <a href="#building">Building</a>
 	* <a href="#development-scripts">Scripts</a>
 	* <a href="#development-notes">Notes</a>
 	* <a href="#development-mentions">Mentions</a>
-
-## <a id="migration-notes"></a>Important migration notes from v2 -> v3
-
-1. The API now reflects hunspell's API almost exactly. Please see `src/Nodehun.d.ts` for the API exposed by v3.
-
-2. Unlike Nodehun2, `suggestSync` for a word spelled correctly returns `null` instead of an empty array.
-	 For example:
-
-	```js
-	nodehun2.spellSuggestionsSync('color') // => []
-	nodehun3.suggestSync('color') // => null
-	```
-
-3. There are performance gains to be seen for those who wrapped the library in promises.
-
-	![Spelling performance comparison graph](./test/performance/spell.png "Spelling performance comparison graph")
-	![Suggestions performance comparison graph](./test/performance/suggest.png "Suggestions performance comparison graph")
-
-	To run the tests on your machine, execute `npm run performance-test` and find the graphs in the `test/performance` folder.
-
-4. To continue using the old version, use:
-
-	`npm install --save nodehun@2.0.12`
-
-	Works with Node v11 or lower, but some have reported compilation issues in v10 and v11.
-	If you plan to use this version, please refer to the [old](https://github.com/Wulf/nodehun/blob/77e4be9e2cde8805061387d4783357c45c582a04/readme.md) readme file.
 
 
 ## <a id="examples"></a>Examples
@@ -129,10 +107,10 @@ await nodehun.suggest('calor')
 ```
 
 ### <a id="add-dictionary"></a>Add Dictionary
-Nodehun also can add another dictionary on top of an existing dictionary object at runtime (this means it is not permanent) in order to merge two dictionaries. Once again, please do not actually use `readFileSync`.
+Nodehun also can add another dictionary on top of an existing dictionary object at runtime (this means it is not permanent) in order to merge two dictionaries.
 
 ```js
-const en_CA = fs.readFileSync('./path/to/en_CA.dic');
+const en_CA = './path/to/en_CA.dic';
 
 await nodehun.suggest('colour') // => [ ...suggestions... ]
 // because "colour" is not a defined word in the US English dictionary
@@ -271,6 +249,32 @@ Let the community know if you've found other dictionary repositories!
 
 # <a id="development"></a>Development and Contribution
 
+## <a id="building"></a>Building
+
+To build nodehun-native, take the following steps:
+
+```bash
+# Clone the repo and enter directory
+gh repo clone bjarkebech/nodehun-native
+cd nodehun-native
+
+# Install npm dependencies
+npm i
+
+# Fetch the latest changes to our submodule
+git submodule update --recursive --remote
+
+# Then, check out the latest release version of hunspell (in our case, 1.7.2).
+cd src/hunspell
+git checkout v1.7.2
+
+# Go back to the root of our repository
+cd ../../
+
+# Build and run our tests!
+npm run start
+```
+
 ## <a id="development-scripts"></a>Scripts
 
 The following is a a list of commands and their descriptions which may
@@ -300,3 +304,5 @@ npm run build # super fast now!
 ## <a id="development-mentions"></a>Mentions
 
 Special thanks to [@nathanjsweet](https://github.com/nathanjsweet) for his grass roots efforts with this project, including the `hunspell-distributed` package upon which this library relies to provide buffer-based Hunspell initialization.
+
+Huge props to [@Wulf](https://github.com/Wulf) and [@ONLYOFFICE](https://github.com/ONLYOFFICE) for their great work on Nodehun and the fork.

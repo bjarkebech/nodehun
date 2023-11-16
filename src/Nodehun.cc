@@ -186,7 +186,7 @@ Napi::Value Nodehun::spellSync(const Napi::CallbackInfo& info) {
     std::string word = info[0].ToString().Utf8Value();
 
     context->lockRead();
-    bool correct = context->instance->spell(word.c_str());
+    bool correct = context->instance->spell(word);
     context->unlockRead();
     
     return Napi::Boolean::New(env, correct);
@@ -234,23 +234,21 @@ Napi::Value Nodehun::suggestSync(const Napi::CallbackInfo& info) {
     std::string word = info[0].ToString().Utf8Value();
 
     context->lockRead();
-    bool isCorrect = this->context->instance->spell(word.c_str());
+    bool isCorrect = this->context->instance->spell(word);
     
     if (isCorrect) {
       context->unlockRead();
       return env.Null();
     }
     
-    char** suggestions = NULL;
-    int length = this->context->instance->suggest(&suggestions, word.c_str());
+    std::vector<std::string> suggestions = this->context->instance->suggest(word);
+    uint length = suggestions.size();
     context->unlockRead();
     
     Napi::Array array = Napi::Array::New(env, length);
     for (int i = 0; i < length; i++) {
       array.Set(i, Napi::String::New(env, suggestions[i]));
     }
-
-    this->context->instance->free_list(&suggestions, length);
 
     return array;
   }
@@ -630,9 +628,9 @@ Napi::Value Nodehun::getWordCharacters(const Napi::CallbackInfo& info) {
     return error.Value();
   }
 
-  const char* wordCharacters = this->context->instance->get_wordchars();
+  const std::string wordCharacters = this->context->instance->get_wordchars_cpp();
   
-  if (wordCharacters == NULL) {
+  if (wordCharacters.empty()) {
     return env.Undefined();
   } else {
     return Napi::String::New(env, wordCharacters);
@@ -667,9 +665,9 @@ Napi::Value Nodehun::getVersion(const Napi::CallbackInfo& info) {
     return error.Value();
   }
 
-  const char* v = this->context->instance->get_version();
+  const std::string v = this->context->instance->get_version_cpp();
 
-  if (v == NULL) {
+  if (v.empty()) {
     return env.Undefined();
   } else {
     return Napi::String::New(env, v);

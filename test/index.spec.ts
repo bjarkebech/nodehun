@@ -1,24 +1,26 @@
 import { fail, strictEqual, throws, deepEqual, notEqual } from "assert"
-import { userInfo } from "os"
 
 const Nodehun = require('bindings')('Nodehun')
-const fs = require('fs')
 const path = require('path')
 const enUS = {
-    affix: fs.readFileSync(path.resolve(__dirname, './dictionaries/en_us.aff')),
-    dictionary: fs.readFileSync(path.resolve(__dirname, './dictionaries/en_us.dic'))
+    affix: path.resolve(__dirname, './dictionaries/en_us.aff'),
+    dictionary: path.resolve(__dirname, './dictionaries/en_us.dic')
 }
 const enGB = {
-    affix: fs.readFileSync(path.resolve(__dirname, './dictionaries/en_gb.aff')),
-    dictionary: fs.readFileSync(path.resolve(__dirname, './dictionaries/en_gb.dic'))
+    affix: path.resolve(__dirname, './dictionaries/en_gb.aff'),
+    dictionary: path.resolve(__dirname, './dictionaries/en_gb.dic')
 }
 const fr = {
-    dictionary: fs.readFileSync(path.resolve(__dirname, './dictionaries/fr.dic'))
+    dictionary: path.resolve(__dirname, './dictionaries/fr.dic')
 }
 const nl = {
-    affix: fs.readFileSync(path.resolve(__dirname, './dictionaries/nl.aff')),
-    dictionary: fs.readFileSync(path.resolve(__dirname, './dictionaries/nl.dic'))
+    affix: path.resolve(__dirname, './dictionaries/nl.aff'),
+    dictionary: path.resolve(__dirname, './dictionaries/nl.dic')
 }
+const daDK = {
+  affix: path.resolve(__dirname, "./dictionaries/da_DK.aff"),
+  dictionary: path.resolve(__dirname, "./dictionaries/da_DK.dic"),
+};
 
 describe('Nodehun(affixBuffer, dictionaryBuffer)', () => {
     it(`should export a function`, () => {
@@ -347,7 +349,7 @@ describe('Nodehun#suggestSync(word)', () => {
     it(`should suggest uppercase versions`, () => {
         deepEqual(
             nodehun.suggestSync('html'),
-            ['HTML', 'ht ml', 'ht-ml']
+            ['HTML']
         )
     });
 
@@ -389,10 +391,10 @@ describe('Nodehun#suggestSync(word)', () => {
         strictEqual(suggestions.includes('concise'), true)
     });
 
-    // it(`should not throw when suggesting for emojis ☀`, () => {
-    //     nodehun.suggestSync('😀')
-    //     nodehun.suggestSync('☀')
-    // })
+    it(`should not throw when suggesting for emojis ☀`, () => {
+        nodehun.suggestSync('😀')
+        nodehun.suggestSync('☀')
+    })
 
     it(`should not overflow on too long values`, () => {
         const word = 'npmnpmnpmnpmnpmnpmnpmnpmnpmnpmnpmnpmnpmnpmnpm'

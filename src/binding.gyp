@@ -41,6 +41,14 @@
 		'defines': [ 'HUNSPELL_STATIC' ],
 	    },
 	    'cflags': [ '-O3' ],
+      'cflags_cc!': [ '-fno-rtti' ],
+      'conditions': [
+        ['OS=="mac"', {
+          'xcode_settings': {
+            'GCC_ENABLE_CPP_RTTI': 'YES'
+          }
+        }]
+      ],
 	    'sources': [
 		'hunspell/src/hunspell/affentry.cxx',
 		'hunspell/src/hunspell/affentry.hxx',
@@ -56,6 +64,7 @@
 		'hunspell/src/hunspell/hashmgr.hxx',
 		'hunspell/src/hunspell/htypes.hxx',
 		'hunspell/src/hunspell/hunspell.cxx',
+    'hunspell/src/hunspell/hunspell.h',
 		'hunspell/src/hunspell/hunspell.hxx',
 		'hunspell/src/hunspell/hunzip.cxx',
 		'hunspell/src/hunspell/hunzip.hxx',
@@ -66,6 +75,7 @@
 		'hunspell/src/hunspell/replist.hxx',
 		'hunspell/src/hunspell/suggestmgr.cxx',
 		'hunspell/src/hunspell/suggestmgr.hxx',
+    'hunspell/src/hunspell/utf_info.hxx',
 		'hunspell/src/hunspell/w_char.hxx'
 	    ]
 	}

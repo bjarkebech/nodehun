@@ -1,6 +1,6 @@
 {
-  "name": "nodehun",
-  "version": "3.0.2",
+  "name": "nodehun-native",
+  "version": "3.0.5",
   "description": "The Hunspell binding for nodejs that exposes as much of hunspell as possible and also adds new features. Hunspell is a first class spellcheck library used by Google, Apple, and Mozilla.",
   "license": "MIT",
   "keywords": [
@@ -12,15 +12,16 @@
     "spell checker",
     "check"
   ],
-  "repository": "https://github.com/Wulf/nodehun",
-  "bugs": "https://github.com/Wulf/nodehun/issues",
-  "author": "Nathan Sweet <nathanjsweet@gmail.com>",
+  "repository": "https://github.com/bjarkebech/nodehun",
+  "bugs": "https://github.com/bjarkebech/nodehun/issues",
+  "author": "Bjarke Bech <bjarkebech@gmail.com>",
   "contributors": [
     "Nathan Sweet <nathanjsweet@gmail.com>",
     "Haris Khan <hk12@live.ca>",
     "Titus Wormer <tituswormer@gmail.com>",
     "Espen Hovlandsdal <espen@hovlandsdal.com>",
-    "Thomas Beverley <tom.beverley101@gmail.com>"
+    "Thomas Beverley <tom.beverley101@gmail.com>",
+    "Bjarke Bech <bjarkebech@gmail.com>"
   ],
   "main": "build/Release/Nodehun",
   "types": "src/Nodehun.d.ts",
@@ -41,7 +42,6 @@
     "start": "nodemon -e ts,js,cc,h,gyp -x \"npm run build && npm run test\"",
     "start-test": "nodemon -e ts,js -x \"npm run test\"",
     "build": "node-gyp rebuild -j 8",
-    "test": "ts-node --transpile-only node_modules/mocha/bin/mocha ./test/*.spec.ts",
-    "performance-test": "echo \"This command only works with node version 11 or lower!\" && npm i chart.js@2.9.2 chartjs-node@1.7.1 nodehun@2.0.12 && ts-node test/performance/performance.ts"
+    "test": "ts-node --transpile-only node_modules/mocha/bin/mocha ./test/*.spec.ts"
   }
 }
