@@ -12,8 +12,8 @@
     "spell checker",
     "check"
   ],
-  "repository": "https://github.com/bjarkebech/nodehun",
-  "bugs": "https://github.com/bjarkebech/nodehun/issues",
+  "repository": "https://github.com/bjarkebech/nodehun-native",
+  "bugs": "https://github.com/bjarkebech/nodehun-native/issues",
   "author": "Bjarke Bech <bjarkebech@gmail.com>",
   "contributors": [
     "Nathan Sweet <nathanjsweet@gmail.com>",
